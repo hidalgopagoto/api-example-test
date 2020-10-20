@@ -26,14 +26,16 @@ class AccountDatasource extends AbstractDatasource implements AccountDatasourceI
     /**
      * @param int $code
      * @param float $amount
+     * @return bool
      */
-    public function deposit(int $code, float $amount): void
+    public function deposit(int $code, float $amount): bool
     {
         $connection = $this->getConnection();
         $rs = $connection->prepare("UPDATE account SET balance = balance + ? WHERE code = ?");
         $rs->bindParam(1, $amount);
         $rs->bindParam(2, $code);
         $rs->execute();
+        return true;
     }
 
     /**
@@ -50,29 +52,38 @@ class AccountDatasource extends AbstractDatasource implements AccountDatasourceI
     }
 
     /**
-     *
+     * @return bool
      */
-    public function reset(): void
+    public function reset(): bool
     {
         $connection = $this->getConnection();
         $rs = $connection->prepare("TRUNCATE account");
         $rs->execute();
+        return true;
     }
 
     /**
      * @param int $code
      * @param float $amount
+     * @return bool
      */
-    public function withdraw(int $code, float $amount): void
+    public function withdraw(int $code, float $amount): bool
     {
         $connection = $this->getConnection();
         $rs = $connection->prepare("UPDATE account SET balance = balance - ? WHERE code = ?");
         $rs->bindParam(1, $amount);
         $rs->bindParam(2, $code);
         $rs->execute();
+        return true;
     }
 
-    public function transfer(int $origin, int $destination, float $amount): void
+    /**
+     * @param int $origin
+     * @param int $destination
+     * @param float $amount
+     * @return bool
+     */
+    public function transfer(int $origin, int $destination, float $amount): bool
     {
         $connection = $this->getConnection();
         $connection->beginTransaction();
@@ -86,8 +97,10 @@ class AccountDatasource extends AbstractDatasource implements AccountDatasourceI
             $rs->bindParam(2, $origin);
             $rs->execute();
             $connection->commit();
+            return true;
         } catch (\Exception $e) {
             $connection->rollBack();
+            return false;
         }
     }
 }

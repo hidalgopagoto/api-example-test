@@ -35,6 +35,7 @@ class Account
         $accountData = $this->datasource->findByCode($code);
         if ($accountData) {
             $account = new self();
+            $account->setDatasource($this->datasource);
             $account->setBalance($accountData['balance'] ?? 0);
             $account->setCode($code);
             return $account;
