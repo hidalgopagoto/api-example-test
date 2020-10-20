@@ -49,7 +49,7 @@ class EventController
             $account->deposit($amount);
         }
         $response = new Response();
-        $response->json(['destination' => ['id' => $account->getCode(), 'balance' => $account->getBalance()]], 201);
+        $response->json(['destination' => ['id' => (string) $account->getCode(), 'balance' => $account->getBalance()]], 201);
         exit;
     }
 

@@ -22,7 +22,8 @@ class HomeController
     {
         $account = new Account();
         $account->reset();
-        $response = new Response();
-        $response->json(['success' => true, 'message' => 'Reset data']);
+        http_response_code(200);
+        echo "OK";
+        exit;
     }
 }
