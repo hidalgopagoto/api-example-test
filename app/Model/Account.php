@@ -30,7 +30,7 @@ class Account
      * @param int|null $code
      * @return Account
      */
-    public function findByCode(int $code = null)
+    public function findByCode(?int $code = null)
     {
         $accountData = $this->datasource->findByCode($code);
         if ($accountData) {
@@ -43,6 +43,51 @@ class Account
     }
 
     /**
+     * @param float|int $amount
+     */
+    public function deposit(float $amount = 0)
+    {
+        $this->datasource->deposit($this->getCode(), $amount);
+        $this->setBalance($this->getBalance() + $amount);
+    }
+
+    /**
+     * @param float|int $amount
+     */
+    public function withdraw(float $amount = 0)
+    {
+        $this->datasource->withdraw($this->getCode(), $amount);
+        $this->setBalance($this->getBalance() - $amount);
+    }
+
+    /**
+     * @param Account $accountDestination
+     * @param float $amount
+     */
+    public function transfer(self $accountDestination, float $amount)
+    {
+        $this->datasource->transfer($this->getCode(), $accountDestination->getCode(), $amount);
+        $this->setBalance($this->getBalance() - $amount);
+        $accountDestination->setBalance($accountDestination->getBalance() + $amount);
+    }
+
+    /**
+     *
+     */
+    public function reset()
+    {
+        $this->datasource->reset();
+    }
+
+    /**
+     *
+     */
+    public function create()
+    {
+        $this->datasource->create($this->getCode());
+    }
+
+    /**
      * @return int
      */
     public function getCode(): int
@@ -51,10 +96,14 @@ class Account
     }
 
     /**
-     * @param int $code
+     * @param int|null $code
+     * @throws \Exception
      */
-    public function setCode(int $code): void
+    public function setCode(?int $code): void
     {
+        if (!$code) {
+            throw new \Exception('Code not valid');
+        }
         $this->code = $code;
     }
 
@@ -63,7 +112,7 @@ class Account
      */
     public function getBalance(): float
     {
-        return $this->balance;
+        return $this->balance ? $this->balance : 0;
     }
 
     /**

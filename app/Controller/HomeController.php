@@ -2,6 +2,7 @@
 namespace App\Controller;
 
 use App\Http\Response;
+use App\Model\Account;
 
 class HomeController
 {
@@ -19,7 +20,8 @@ class HomeController
      */
     public function reset()
     {
-        // @TODO reset data
+        $account = new Account();
+        $account->reset();
         $response = new Response();
         $response->json(['success' => true, 'message' => 'Reset data']);
     }

@@ -8,6 +8,9 @@ $dispatcher = FastRoute\simpleDispatcher(function(RouteCollector $r) {
     $r->addGroup('/balance', function(RouteCollector  $r) {
         $r->addRoute('GET', '[/]', 'App\Controller\BalanceController@show');
     });
+    $r->addGroup('/event', function(RouteCollector  $r) {
+        $r->addRoute('POST', '[/]', 'App\Controller\EventController@run');
+    });
 });
 
 // Fetch method and URI from somewhere
