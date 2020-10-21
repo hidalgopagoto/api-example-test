@@ -11,4 +11,5 @@ interface AccountDatasourceInterface
     public function withdraw(int $code, float $amount): bool;
     public function create(int $code): int;
     public function reset(): bool;
+    public function getMaxAmountForWithdraw(): float;
 }

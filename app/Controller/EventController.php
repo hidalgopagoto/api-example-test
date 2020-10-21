@@ -58,17 +58,21 @@ class EventController
      */
     private function withdraw(?array $body = [])
     {
-        $origin = $body['origin'] ?? null;
-        $account = (new Account())->findByCode($origin);
-        if (!$account) {
+        try {
+            $origin = $body['origin'] ?? null;
+            $account = (new Account())->findByCode($origin);
+            if (!$account) {
+                throw new \Exception(0, 400);
+            }
+            $amount = $body['amount'] ?? 0;
+            $account->withdraw($amount);
             $response = new Response();
-            $response->json(0, 404);
+            return $response->json(['origin' => ['id' => $origin, 'balance' => $account->getBalance()]], 201);
+        } catch (\Exception $e) {
+            $response = new Response();
+            $response->json($e->getMessage(), $e->getCode());
             exit;
         }
-        $amount = $body['amount'] ?? 0;
-        $account->withdraw($amount);
-        $response = new Response();
-        return $response->json(['origin' => ['id' => $origin, 'balance' => $account->getBalance()]], 201);
     }
 
     /**

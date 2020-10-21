@@ -7,6 +7,8 @@ use App\Model\Account;
 class AccountDatasource extends AbstractDatasource implements AccountDatasourceInterface
 {
 
+    private static $maxLimitForWithdraw = 2;
+
     /**
      * @param int|null $code
      * @return Account|null
@@ -21,6 +23,14 @@ class AccountDatasource extends AbstractDatasource implements AccountDatasourceI
             return $rs->fetch(\PDO::FETCH_ASSOC);
         }
         return null;
+    }
+
+    /**
+     * @return float
+     */
+    public function getMaxAmountForWithdraw(): float
+    {
+        return self::$maxLimitForWithdraw;
     }
 
     /**

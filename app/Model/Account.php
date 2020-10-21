@@ -29,6 +29,7 @@ class Account
     /**
      * @param int|null $code
      * @return Account
+     * @throws \Exception
      */
     public function findByCode(?int $code = null)
     {
@@ -57,8 +58,16 @@ class Account
      */
     public function withdraw(float $amount = 0)
     {
+        $this->validateMaxWithdrawAmount($amount);
         $this->datasource->withdraw($this->getCode(), $amount);
         $this->setBalance($this->getBalance() - $amount);
+    }
+
+    private function validateMaxWithdrawAmount(float $amount = 0)
+    {
+        if ($amount > $this->datasource->getMaxAmountForWithdraw()) {
+            throw new \Exception('Limit exceeded', 400);
+        }
     }
 
     /**
